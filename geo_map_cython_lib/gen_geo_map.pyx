@@ -11,7 +11,7 @@ ctypedef fused DTYPE_t:
 @cython.boundscheck(False)
 cdef inline DTYPE_t tri_area(DTYPE_t a, DTYPE_t b, DTYPE_t c):
 	cdef DTYPE_t s = (a + b + c) / 2.0
-	return (s*(s-a)*(s-b)*(s-c)) ** 0.5
+	return abs(s*(s-a)*(s-b)*(s-c)) ** 0.5
 
 
 @cython.boundscheck(False)
@@ -43,7 +43,7 @@ def gen_geo_map(np.ndarray[DTYPE_t, ndim=3] geo_map, np.ndarray[np.int_t, ndim=2
 		if a >= 1.0:
 			geo_map[y, x, 0] = 2 * tri_area(a, b, c) / a
 		else:
-			geo_map[y, x, 0] = (b+c) / 2.0
+			geo_map[y, x, 0] = 2 * tri_area(a, b, c) / (a+1)
 
 		a = norm(p2[0]-p1[0], p2[1]-p1[1])
 		b = norm(p1[0]-x, p1[1]-y)
@@ -51,7 +51,7 @@ def gen_geo_map(np.ndarray[DTYPE_t, ndim=3] geo_map, np.ndarray[np.int_t, ndim=2
 		if a >= 1.0:
 			geo_map[y, x, 1] = 2 * tri_area(a, b, c) / a
 		else:
-			geo_map[y, x, 1] = (b+c) / 2.0
+			geo_map[y, x, 1] = 2 * tri_area(a, b, c) / (a+1)
 
 		a = norm(p3[0]-p2[0], p3[1]-p2[1])
 		b = norm(p2[0]-x, p2[1]-y)
@@ -59,7 +59,7 @@ def gen_geo_map(np.ndarray[DTYPE_t, ndim=3] geo_map, np.ndarray[np.int_t, ndim=2
 		if a >= 1.0:
 			geo_map[y, x, 2] = 2 * tri_area(a, b, c) / a
 		else:
-			geo_map[y, x, 2] = (b+c) / 2.0
+			geo_map[y, x, 2] = 2 * tri_area(a, b, c) / (a+1)
 
 		a = norm(p0[0]-p3[0], p0[1]-p3[1])
 		b = norm(p3[0]-x, p3[1]-y)
@@ -67,6 +67,6 @@ def gen_geo_map(np.ndarray[DTYPE_t, ndim=3] geo_map, np.ndarray[np.int_t, ndim=2
 		if a >= 1.0:
 			geo_map[y, x, 3] = 2 * tri_area(a, b, c) / a
 		else:
-			geo_map[y, x, 3] = (b+c) / 2.0
+			geo_map[y, x, 3] = 2 * tri_area(a, b, c) / (a+1)
 
 		geo_map[y, x, 4] = rot_angle
